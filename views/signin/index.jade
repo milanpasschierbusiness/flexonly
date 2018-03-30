@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  header
+    .container
+      .header-menu
+        ul
+          li
+            button(type="button", class="btn btn-primary")
+              a(href="") Aanmelden
+  .content
+    .container
+      .row
+        .col-md-4.offset-md-4
+  
+          h1 Inloggen Maak een account aan bij Flexonly
+           
+          form
+            a(href="/auth/linkedin") Login with LinkedIn
+            .form-group
+              label(for="exampleInputEmail1") Email address
+              input(type="email", class="form-control", id="exampleInputEmail1", aria-describedby="emailHelp", placeholder="Enter email")
+            .form-group
+              label(for="exampleInputPassword1") Password
+              input(type="password", class="form-control", id="exampleInputPassword1", placeholder="Password")
+            a(href="#") Wachtwoord vergeten?
+            br
+            br
+            button(type="submit" class="btn btn-primary") Submit

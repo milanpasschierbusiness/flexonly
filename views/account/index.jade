@@ -1,0 +1,66 @@
+extends layout
+
+block content
+  .sidebar
+    header
+      .container
+        .header-menu.mobile
+          ul
+            li
+              button(type="button", class="btn", id="collapse-menu")
+                img(src="#{user.user_profile_picture}")
+                small #{user.first_name} #{user.last_name}
+                  i(class="fa fa-angle-down", aria-hidden="true")
+              button(type="button", class="btn", id="collapsed-menu")
+                img(src="#{user.user_profile_picture}")
+                small #{user.first_name} #{user.last_name}
+                  i(class="fa fa-angle-up", aria-hidden="true")
+      .header-collapse-menu
+        nav.no-category
+          ul
+            li(class="active")
+              a(href="#" title="Dashboard") Dashboard
+        nav.category
+          ul
+            li
+              span Instellingen
+            li
+              a(href="#" title="Profielinstellingen")
+                small Profielinstellingen
+            li
+              a(href="#" title="Accountinstellingen")
+                small Accountinstellingen
+        nav.category
+          ul
+            li
+              span Werkgever
+            li
+              a(href="#" title="Plaats vacature")
+                small Plaats vacature
+
+    script(type="text/javascript").
+      $("#collapsed-menu").hide();
+      $("#collapse-menu").click(function() {
+        $(".header-collapse-menu").show();
+        $("#collapse-menu").hide();
+        $("#collapsed-menu").show();
+      });
+      $("#collapsed-menu").click(function() {
+        $(".header-collapse-menu").hide();
+        $("#collapsed-menu").hide();
+        $("#collapse-menu").show();
+      });
+  .main
+    .header-desktop.desktop
+      .header-menu
+        ul
+          li
+            button(type="button", class="btn")
+              img(src="#{user.user_profile_picture}")
+              small #{user.first_name} #{user.last_name}
+                i(class="fa fa-angle-down", aria-hidden="true")
+      .clearfix
+    .content
+            h1.title Dashboard
+            h2 Dashboard van #{user.first_name} #{user.last_name}
+            p Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.

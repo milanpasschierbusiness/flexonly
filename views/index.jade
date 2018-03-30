@@ -1,0 +1,164 @@
+extends layout
+
+block content
+  header
+    .header-logo
+      img(src="")
+    .map-header
+      .switch
+        ul
+          li
+            button(type="button", class="btn", id="collapse-menu")
+              small Werknemer
+          li
+            button(type="button", class="btn", id="collapse-menu")
+              small Werkgever
+        
+      form(class="form-inline")
+        .form-group
+          input(type="text", class="form-control date", id="datepicker", aria-describedby="emailHelp", placeholder="Datum...")
+        .form-group
+          input(type="text", class="form-control skills", aria-describedby="emailHelp", placeholder="Vaardigheden...")
+        .form-group
+          input(type="text", class="form-control salary", aria-describedby="emailHelp", placeholder="Salaris per uur...")
+        button(type="submit" class="btn btn-primary") Submit
+    if user
+      .header-menu
+          ul
+            li
+              button(type="button", class="btn", id="collapse-menu")
+                img(src="#{user.user_profile_picture}")
+                small #{user.first_name} #{user.last_name}
+                  i(class="fa fa-angle-down", aria-hidden="true")
+              button(type="button", class="btn", id="collapsed-menu")
+                img(src="#{user.user_profile_picture}")
+                small #{user.first_name} #{user.last_name}
+                  i(class="fa fa-angle-up", aria-hidden="true")
+      .header-collapse-menu
+        nav.no-category
+          ul
+            li()
+              a(href="account" title="Dashboard") Dashboard
+        nav.category
+          ul
+            li
+              span Instellingen
+            li
+              a(href="#" title="Profielinstellingen")
+                small Profielinstellingen
+            li
+              a(href="#" title="Accountinstellingen")
+                small Accountinstellingen
+        nav.category
+          ul
+            li
+              span Werkgever
+            li
+              a(href="#" title="Plaats vacature")
+                small Plaats vacature
+    else
+      .header-menu
+        ul
+          li
+            button(type="button", class="btn btn-primary")
+              a(href="") Aanmelden
+          li
+              a(href="/signin") Inloggen
+                
+  
+  script(type="text/javascript").
+    $("#collapsed-menu").hide();
+    $("#collapse-menu").click(function() {
+      $(".header-collapse-menu").show();
+      $("#collapse-menu").hide();
+      $("#collapsed-menu").show();
+    });
+    $("#collapsed-menu").click(function() {
+      $(".header-collapse-menu").hide();
+      $("#collapsed-menu").hide();
+      $("#collapse-menu").show();
+    });
+
+  .sidebar
+      .offers(id="offers")
+      .sidebar-bottom(id="bottom")
+        small Flexonly is niet aansprakelijk voor (gevolg)schade die voortkomt uit het gebruik van deze site, dan wel uit fouten of ontbrekende functionaliteiten op deze site. Copyright © 2018 Flexonly. Alle rechten voorbehouden.
+  .main
+    .content
+
+      div(id="map")
+      script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+      script.
+        function initMap(map_data) {
+          $.get( "/map_data_offers", function( data ) {
+            var uluru = {lat: 52.36118, lng: 4.89975};
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 12,
+              center: uluru
+            });
+            var myoverlay = new google.maps.OverlayView();
+            myoverlay.draw = function () {
+              //this assigns an id to the markerlayer Pane, so it can be referenced by CSS
+              this.getPanes().markerLayer.id='markerLayer'; 
+            };
+            myoverlay.setMap(map);
+            
+            var offers = document.getElementById('offers');
+            
+            for (var i in data) {
+
+              console.log();
+
+              var icon = {
+                  url: data[i].icon, // url
+                  scaledSize: new google.maps.Size(50, 50), // scaled size
+                  origin: new google.maps.Point(0,0), // origin
+                  anchor: new google.maps.Point(0, 0), // anchor,
+              };
+
+              var marker = new google.maps.Marker({
+                position: {lat: data[i].location.latitude, lng: data[i].location.longitude},
+                map: map,
+                icon: icon,
+                animation: google.maps.Animation.DROP,
+                optimized: false
+              });
+
+              marker.addListener('click', function() {
+                console.log('addListener');
+              });
+              
+              offers.innerHTML += '<div class="offer" style="background: url(' + data[i].cover + ') no-repeat center center;background-size: cover;"><div class="offer-top"><div class="offer-icon"><img src="' + data[i].icon + '"></div></div><div class="offer-bottom"><h4>' + data[i].company + '</h4><div class="rating"><ul><li><i aria-hidden="true" class="fa fa-star"></i></li><li><i aria-hidden="true" class="fa fa-star"></i></li><li><i aria-hidden="true" class="fa fa-star-o"></i></li><li><i aria-hidden="true" class="fa fa-star-o"></i></li><li><i aria-hidden="true" class="fa fa-star-o"></i></li></ul></div><h5>' + data[i].job + '<span class="badge">' + data[i].salary + '</span></h5><p>' + data[i].job_description + '</p><small>' + data[i].skills + '</small></div><div class="offer-form"><form><button type="submit" class="btn btn-primary">Aannemen</button></form></div></div>';
+
+            }
+            
+          });
+        }
+      script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAgD5ianYIWMNEPthEFp9FG9mr0VtH_cA&callback=initMap" async defer)
+      script(src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js")
+      script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/nl.js")
+      script.
+        var picker = new Pikaday({
+            field: document.getElementById('datepicker'),
+            format: 'D/M/YYYY',
+            toString(date, format) {
+                // you should do formatting based on the passed format,
+                // but we will just return 'D/M/YYYY' for simplicity
+                const day = date.getDate();
+                const month = date.getMonth() + 1;
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            },
+            parse(dateString, format) {
+                // dateString is the result of `toString` method
+                const parts = dateString.split('/');
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1] - 1, 10);
+                const year = parseInt(parts[1], 10);
+                return new Date(year, month, day);
+            }
+        });
+      script.
+        var offsetHeight = document.getElementById('bottom').offsetHeight;
+        console.log(offsetHeight);
+        $(".offers").css("height", "calc(100% - " + offsetHeight + "px");

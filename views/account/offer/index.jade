@@ -1,0 +1,177 @@
+extends layout
+
+block content
+  .sidebar
+    header
+      .container
+        .header-menu.mobile
+          ul
+            li
+              button(type="button", class="btn", id="collapse-menu")
+                img(src="#{user.user_profile_picture}")
+                small #{user.first_name} #{user.last_name}
+                  i(class="fa fa-angle-down", aria-hidden="true")
+              button(type="button", class="btn", id="collapsed-menu")
+                img(src="#{user.user_profile_picture}")
+                small #{user.first_name} #{user.last_name}
+                  i(class="fa fa-angle-up", aria-hidden="true")
+      .header-collapse-menu
+        nav.no-category
+          ul
+            li
+              a(href="#" title="Dashboard") Dashboard
+        nav.category
+          ul
+            li
+              span Instellingen
+            li
+              a(href="#" title="Profielinstellingen")
+                small Profielinstellingen
+            li
+              a(href="#" title="Accountinstellingen")
+                small Accountinstellingen
+        nav.category
+          ul
+            li
+              span Werkgever
+            li(class="active")
+              a(href="#" title="Plaats vacature")
+                small Plaats vacature
+            li()
+              a(href="#" title="Vacatures")
+                small Vacatures
+
+    script(type="text/javascript").
+      $("#collapsed-menu").hide();
+      $("#collapse-menu").click(function() {
+        $(".header-collapse-menu").show();
+        $("#collapse-menu").hide();
+        $("#collapsed-menu").show();
+      });
+      $("#collapsed-menu").click(function() {
+        $(".header-collapse-menu").hide();
+        $("#collapsed-menu").hide();
+        $("#collapse-menu").show();
+      });
+  .main
+    .header-desktop.desktop
+      .header-menu
+        ul
+          li
+            button(type="button", class="btn")
+              img(src="#{user.user_profile_picture}")
+              small #{user.first_name} #{user.last_name}
+                i(class="fa fa-angle-down", aria-hidden="true")
+      .clearfix
+    .content
+            h1.title Plaats vacature
+            form(action="", method="post", enctype="multipart/form-data")
+              .row
+                .col-6
+                    h2 Vacature details
+                    .form-group
+                      label(for="company") Bedrijfsnaam
+                      input(type="text", name="company", class="form-control", id="company", placeholder="Je bedrijfsnaam...")
+                    .form-group
+                      label(for="job") Functietitel
+                      input(type="text", name="job", class="form-control", id="job", placeholder="De functietitel...")
+                    .form-group
+                      label(for="job_description") Functieomschrijving
+                      textarea(class="form-control", name="job_description", id="job_description", placeholder="De functietitel..." rows="De functieomschrijving...")
+                    h2 Vaardigheden
+                    .row
+                      .col
+                        .form-group
+                          label(for="skills") Vaardigheden
+                          input(type="text", name="skills", id="skills" class="form-control" placeholder="De vaardigheden...")
+                    h2 Salaris
+                    .row
+                      .col
+                        .form-group
+                          label(for="salary") Salaris per uur
+                          input(type="text", name="salary", id="salary" class="form-control" placeholder="Salaris per uur...")
+                    
+                .col-6
+                    h2 Locatie
+                    .row
+                      .col
+                        .form-group
+                          label(for="street") Straatnaam
+                          input(type="text", name="street", class="form-control" placeholder="Straatnaam...")
+                      .col
+                        .form-group
+                          label(for="house_number") Straatnummer
+                          input(type="text", name="house_number", class="form-control" placeholder="Huisnummer...")
+                    .row
+                      .col
+                        .form-group
+                          label(for="zip_code") Postcode
+                          input(type="text" name="zip_code", class="form-control" placeholder="Postcode...")
+                      .col
+                        .form-group
+                          label(for="city") Plaats
+                          input(type="text", name="city", class="form-control" placeholder="Plaats...")
+                    h2 Datum
+                    .row
+                      .col
+                        .form-group
+                          label(for="start_date") Startdatum
+                          input(type="text", name="start_date", class="form-control" id="datepicker_end", placeholder="Startdatum...")
+                      .col
+                        .form-group
+                          label(for="end_date") Einddatum
+                          input(type="text", name="end_date", class="form-control" id="datepicker_start", placeholder="Einddatum...")
+                    h2 Omslagfoto
+                    .row
+                      .col
+                        .form-group
+                          label(for="cover") Omslagfoto
+                          input(type="file", id="cover", name="cover", class="form-control")
+              input(type="hidden", name="icon", value="#{user.user_profile_picture}")
+              input(type="hidden", name="user_id", value="#{user.user_id}")
+              button(type="submit" class="btn btn-primary") Vacature plaatsen
+              
+              
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/nl.js")
+  script.
+    var picker = new Pikaday({
+        field: document.getElementById('datepicker_start'),
+        format: 'D/M/YYYY',
+        toString(date, format) {
+            // you should do formatting based on the passed format,
+            // but we will just return 'D/M/YYYY' for simplicity
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        },
+        parse(dateString, format) {
+            // dateString is the result of `toString` method
+            const parts = dateString.split('/');
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1] - 1, 10);
+            const year = parseInt(parts[1], 10);
+            return new Date(year, month, day);
+        }
+    });
+    var picker = new Pikaday({
+        field: document.getElementById('datepicker_end'),
+        format: 'D/M/YYYY',
+        toString(date, format) {
+            // you should do formatting based on the passed format,
+            // but we will just return 'D/M/YYYY' for simplicity
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        },
+        parse(dateString, format) {
+            // dateString is the result of `toString` method
+            const parts = dateString.split('/');
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1] - 1, 10);
+            const year = parseInt(parts[1], 10);
+            return new Date(year, month, day);
+        }
+    });

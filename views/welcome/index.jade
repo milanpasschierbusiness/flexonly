@@ -1,0 +1,90 @@
+extends layout
+
+block content
+  .page
+    header
+      .header-logo
+        img(src="https://uploads-ssl.webflow.com/54723f1c79be4eb47403f478/5836faa664d0592803a6e0b0_slack_monochrome_white.png")
+    .sidebar
+      .user-profile-picture
+        img(src="#{user.user_profile_picture}" title="#{user.first_name} #{user.last_name}")
+      h1 Welkom #{user.first_name}, we willen nog een aantal dingen weten over je!
+
+      form(action="welcome/form" id="welcome_form" method="post")
+        .row
+          .col
+            .form-group
+              label(for="KvKInput") Wat is je KvK-bedrijfsnaam?
+              input(type="text", name="KvKInput" class="form-control", id="KvKInput", aria-describedby="KvKInput", placeholder="Je KvK-bedrijfsnaam...")
+              small(class="form-text text-muted") Indien beschikbaar worden je gegevens uit het handelsregister automatisch ingevuld.
+          .col
+            .form-group
+              label(for="company_number") Wat is je KvK-nummer?
+              input(type="text", name="company_number" class="form-control", id="company_number", aria-describedby="company_number", placeholder="Je KvK-nummer...")
+        .row
+          .col
+            .form-group
+              label(for="address") Wat is je adres?
+              input(type="text", name="address" class="form-control", id="address", aria-describedby="address", placeholder="Je adres...")
+          .col
+            .form-group
+              label(for="zip_code") Wat is je postcode?
+              input(type="text", name="zip_code" class="form-control", id="zip_code", aria-describedby="zip_code", placeholder="Je postcode...")
+        .form-group
+          label(for="city") Wat is je woonplaats?
+          input(type="text", name="city" class="form-control", id="city", aria-describedby="city", placeholder="Je woonplaats...")
+        button(type="submit" class="btn btn-primary") Verder
+
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+  script.
+    $('#KvKInput').change(function () {
+    
+      var KvKInput_length = document.getElementById('KvKInput').value.length;
+      
+      if (KvKInput_length >= 3) {
+        $.ajax({
+             url: '/welcome/form',
+             data: {
+              KvKInput: document.getElementById('KvKInput').value
+             },
+             type: 'GET',
+             success: function(response) {
+              response.forEach(function(element) {
+                document.getElementById("KvKInput").value = element.company;
+                document.getElementById("company_number").value = element.company_number;
+                document.getElementById("address").value = element.company_address;
+                document.getElementById("zip_code").value = element.company_zip_code;
+                document.getElementById("city").value = element.company_city;
+              });
+             }
+        });
+      }
+      
+    });
+    $('#welcome_form').submit(function(ev) {
+        ev.preventDefault(); // to stop the form from submitting
+        
+        var welcome_form = $(this).serialize();
+        $.ajax({
+             url: '/welcome/form',
+             data: {
+              company: document.getElementById("KvKInput").value,
+              company_number: document.getElementById("company_number").value,
+              address: document.getElementById("address").value,
+              zip_code: document.getElementById("zip_code").value,
+              city: document.getElementById("city").value
+             },
+             type: 'POST',
+             success: function(response) {
+              console.log(response);
+              
+              if (response === 'success') {
+                window.location.replace("../account");
+              }
+              
+             }
+        });
+        
+        
+        
+    });
